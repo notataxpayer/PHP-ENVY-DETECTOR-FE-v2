@@ -9,7 +9,7 @@ export const analyzeFiles = async (files) => {
 
   try {
     const response = await axios.post(
-      'http://127.0.0.1:8000/api/analyze',
+      'https://php-envy-detector-backend-production.up.railway.app/api/analyze',
       formData
     );
     return response.data;
