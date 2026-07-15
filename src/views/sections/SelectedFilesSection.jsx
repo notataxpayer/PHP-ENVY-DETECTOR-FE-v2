@@ -21,6 +21,7 @@ export default function SelectedFilesSection({ files }) {
         <div className="grid md:grid-cols-2 gap-4">
 
           {files.map((file, index) => (
+            // console.log(file.length),
             <div
               key={index}
               className="border rounded-2xl p-4 flex items-center justify-between"

@@ -1,5 +1,14 @@
 // View component untuk menampilkan detail hasil analisis per file dalam bentuk tabel
+import { useState } from "react";
+
 export default function FileResultCard({ file }) {
+  const [openedMethod, setOpenedMethod] = useState(null);
+
+  const toggleDetail = (methodName) => {
+    setOpenedMethod(
+      openedMethod === methodName ? null : methodName
+    );
+  };
 
   return (
     <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
@@ -51,20 +60,13 @@ export default function FileResultCard({ file }) {
               </th>
 
               <th className="px-6 py-4">
-                ATFD
-              </th>
-
-              <th className="px-6 py-4">
-                LAA
-              </th>
-
-              <th className="px-6 py-4">
-                FDP
-              </th>
-
-              <th className="px-6 py-4">
                 Status
               </th>
+
+              <th className="px-6 py-4">
+                Aksi
+              </th>
+
             </tr>
 
           </thead>
@@ -72,75 +74,129 @@ export default function FileResultCard({ file }) {
           <tbody>
 
             {file.methods.map((method, index) => (
+              <>
+                {/* MAIN ROW */}
+                <tr
+                  key={index}
+                  className="border-t"
+                >
 
-              <tr
-                key={index}
-                className="border-t"
-              >
+                  {/* METHOD NAME */}
+                  <td className="px-6 py-5">
+                    <p className="font-semibold">
+                      {method.method}
+                    </p>
+                  </td>
 
-                {/* METHOD NAME */}
-                <td className="px-6 py-5 align-top">
+                  {/* STATUS */}
+                  <td className="px-6 py-5">
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                        method.status === "ENVY DETECTED"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-green-100 text-green-700"
+                      }`}
+                    >
+                      {method.status}
+                    </span>
+                  </td>
 
-                  <p className="font-semibold">
-                    {method.method}
-                  </p>
+                  {/* ACTION */}
+                  <td className="px-6 py-5">
+                    <button
+                      onClick={() =>
+                        toggleDetail(method.method)
+                      }
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-sm transition"
+                    >
+                      {openedMethod === method.method
+                        ? "Sembunyikan"
+                        : "Detail Metrik"}
+                    </button>
+                  </td>
 
-                  {method.status === "ENVY DETECTED" && (
-                    <div className="mt-3 bg-red-50 border border-red-200 rounded-2xl p-4">
+                </tr>
 
-                      <p className="text-sm">
-                        <span className="font-semibold">
-                          Target Class:
-                        </span>{" "}
-                        {method.dominant_class}
-                      </p>
+                {/* DETAIL ACCORDION */}
+                {openedMethod === method.method && (
+                  <tr className="bg-gray-50">
 
-                      <p className="text-sm mt-2 text-gray-700">
-                        💡 {method.recommendation}
-                      </p>
-                    </div>
-                  )}
-                </td>
+                    <td
+                      colSpan="3"
+                      className="px-6 py-5"
+                    >
 
-                {/* ATFD METRIC */}
-                <td className="px-6 py-5 align-top">
-                  <p className="font-semibold">
-                    {method.metrics?.ATFD || '-'}
-                  </p>
-                </td>
+                      <div className="rounded-2xl border bg-white p-5">
 
-                {/* LAA METRIC */}
-                <td className="px-6 py-5 align-top">
-                  <p className="font-semibold">
-                    {method.metrics?.LAA || '-'}
-                  </p>
-                </td>
+                        {/* METRICS */}
+                        <div className="grid grid-cols-3 gap-4 mb-5">
 
-                {/* FDP METRIC */}
-                <td className="px-6 py-5 align-top">
-                  <p className="font-semibold">
-                    {method.metrics?.FDP || '-'}
-                  </p>
-                </td>
+                          <div className="bg-red-50 rounded-xl p-4">
+                            <p className="text-xs text-gray-500">
+                              ATFD
+                            </p>
 
-                {/* STATUS BADGE */}
-                <td className="px-6 py-5 align-top">
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                      method.status === "ENVY DETECTED"
-                        ? "bg-red-100 text-red-700"
-                        : "bg-green-100 text-green-700"
-                    }`}
-                  >
-                    {method.status}
-                  </span>
-                </td>
-              </tr>
+                            <p className="text-lg font-bold">
+                              {method.metrics?.ATFD ?? "-"}
+                            </p>
+                          </div>
+
+                          <div className="bg-yellow-50 rounded-xl p-4">
+                            <p className="text-xs text-gray-500">
+                              LAA
+                            </p>
+
+                            <p className="text-lg font-bold">
+                              {method.metrics?.LAA ?? "-"}
+                            </p>
+                          </div>
+
+                          <div className="bg-blue-50 rounded-xl p-4">
+                            <p className="text-xs text-gray-500">
+                              FDP
+                            </p>
+
+                            <p className="text-lg font-bold">
+                              {method.metrics?.FDP ?? "-"}
+                            </p>
+                          </div>
+
+                        </div>
+
+                        {/* ENVY INFORMATION */}
+                        {method.status === "ENVY DETECTED" && (
+                          <div className="bg-red-50 border border-red-200 rounded-2xl p-4">
+
+                            <p className="text-sm">
+                              <span className="font-semibold">
+                                Target Class:
+                              </span>{" "}
+                              {method.dominant_class}
+                            </p>
+
+                            <p className="text-sm mt-3 text-gray-700">
+                              💡 {method.recommendation}
+                            </p>
+
+                          </div>
+                        )}
+
+                      </div>
+
+                    </td>
+
+                  </tr>
+                )}
+
+              </>
             ))}
 
           </tbody>
+
         </table>
+
       </div>
+
     </div>
   );
 }

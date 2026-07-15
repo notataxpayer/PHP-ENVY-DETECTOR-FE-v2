@@ -35,6 +35,21 @@ export const mergeDetectionAndMetrics = (detection, metrics) => {
   });
 };
 
+// Mengambil detail metrik berdasarkan method yang dipilih
+export const getMetricDetail = (data, fileName, methodName) => {
+  const file = data.find((f) => f.file === fileName);
+
+  if (!file) return null;
+
+  const method = file.methods.find(
+    (m) => m.method === methodName
+  );
+
+  if (!method) return null;
+
+  return method;
+};
+
 // Fungsi untuk menghitung statistik hasil analisis (total methods, passed, failed)
 export const calculateStatistics = (data) => {
   const totalFiles = data.length;

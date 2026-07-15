@@ -1,4 +1,4 @@
-import { analyzeFiles, mergeDetectionAndMetrics, calculateStatistics } from '../models/analysisModel';
+import { analyzeFiles, mergeDetectionAndMetrics, calculateStatistics, getMetricDetail } from '../models/analysisModel';
 
 // Controller untuk menangani logika upload dan analisis kode
 export const useAnalyzeController = () => {
@@ -7,13 +7,17 @@ export const useAnalyzeController = () => {
     if (!files.length) return;
 
     try {
+      // console.log(files.length);
       setLoading(true);
+      const startTime = performance.now();
       const response = await analyzeFiles(files);
+      const endTime = performance.now();
       const { detection, metrics } = response;
 
       const mergedData = mergeDetectionAndMetrics(detection, metrics);
       setResult(mergedData);
-      return mergedData;
+      console.log(`Analysis Time: ${((endTime - startTime) / 1000).toFixed(3)} seconds`);
+      return mergedData; // Waktu analisis dalam detik
     } catch (error) {
       console.error('Analysis failed:', error);
       throw error;
@@ -48,6 +52,19 @@ export const useAnalyzeController = () => {
     setFiles([]);
   };
 
+  // Mengambil detail metrik dari method yang dipilih
+    const handleGetMetricDetail = (
+    data,
+    fileName,
+    methodName
+    ) => {
+    return getMetricDetail(
+        data,
+        fileName,
+        methodName
+    );
+    };
+
   return {
     handleAnalyzeFiles,
     handleGetAnalysisStatistics,
@@ -55,5 +72,6 @@ export const useAnalyzeController = () => {
     handleCalculateTotalMethods,
     handleCalculateTotalEnvy,
     handleResetAnalysis,
+    handleGetMetricDetail,
   };
 };

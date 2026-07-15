@@ -19,7 +19,7 @@ export default function HeroSection() {
         <p className="text-gray-300 leading-relaxed">
           Analyze PHP source code using Abstract Syntax Tree (AST)
           and software metrics such as ATFD, LAA, and FDP
-          to detect Feature Envy automatically.
+          to detect Feature Envy automatically. Only works with propertyfetch!
         </p>
 
         <div className="flex gap-4 mt-6">
